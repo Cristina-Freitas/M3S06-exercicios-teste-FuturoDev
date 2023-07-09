@@ -1,13 +1,17 @@
 package com.example.exerciciotestes.service;
 
+import com.example.exerciciotestes.controller.request.ClienteRequest;
 import com.example.exerciciotestes.model.Cliente;
 import com.example.exerciciotestes.repository.ClienteRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,4 +54,21 @@ class ClienteServiceTest {
         verify(clienteRepository, times(1)).findById(clienteId);
     }
 
+    @Test
+    void salvarCliente() {
+        ClienteRequest clienteRequest = new ClienteRequest("Cliente 1", 50.0);
+        clienteRequest.setNomeCliente("Cliente 1");
+        clienteRequest.setSaldoCliente(50.0);
+
+        Cliente clienteSalvo = new Cliente("Cliente 1", 50.0);
+        when(clienteRepository.save(any(Cliente.class))).thenReturn(clienteSalvo);
+
+        Cliente clienteRetornado = clienteService.salvarCliente(clienteRequest);
+
+        assertNotNull(clienteRetornado);
+        assertEquals(clienteSalvo.getNomeCliente(), clienteRetornado.getNomeCliente());
+        assertEquals(clienteSalvo.getSaldoCliente(), clienteRetornado.getSaldoCliente());
+        verify(clienteRepository, times(1)).save(any(Cliente.class));
     }
+    }
+
