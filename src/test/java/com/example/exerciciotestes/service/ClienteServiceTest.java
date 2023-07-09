@@ -70,5 +70,29 @@ class ClienteServiceTest {
         assertEquals(clienteSalvo.getSaldoCliente(), clienteRetornado.getSaldoCliente());
         verify(clienteRepository, times(1)).save(any(Cliente.class));
     }
+
+    @Test
+    void atualizarCliente() {
+        Long clienteId = 1L;
+        ClienteRequest clienteRequest = new ClienteRequest("Cliente 1", 50.0);
+        clienteRequest.setNomeCliente("Novo Nome");
+        clienteRequest.setSaldoCliente(70.0);
+
+        Cliente clienteAtual = new Cliente("Cliente 2", 50.0);
+        when(clienteRepository.findById(clienteId)).thenReturn(Optional.of(clienteAtual));
+
+        Cliente clienteAtualizado = new Cliente("Cliente 2", 70.0);
+        when(clienteRepository.save(any(Cliente.class))).thenReturn(clienteAtualizado);
+
+        Cliente clienteRetornado = clienteService.atualizarCliente(clienteId, clienteRequest);
+
+        assertNotNull(clienteRetornado);
+        assertEquals(clienteId, clienteRetornado.getId());
+        assertEquals(clienteRequest.getNomeCliente(), clienteRetornado.getNomeCliente());
+        assertEquals(clienteRequest.getSaldoCliente(), clienteRetornado.getSaldoCliente());
+        verify(clienteRepository, times(1)).findById(clienteId);
+        verify(clienteRepository, times(1)).save(any(Cliente.class));
     }
+}
+
 
