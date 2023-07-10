@@ -1,5 +1,6 @@
 package com.example.exerciciotestes.service;
 
+import com.example.exerciciotestes.controller.request.ProdutoRequest;
 import com.example.exerciciotestes.model.Produto;
 import com.example.exerciciotestes.repository.ProdutoRepository;
 import org.junit.jupiter.api.Test;
@@ -47,5 +48,22 @@ class ProdutoServiceTest {
         assertEquals(produto.getNomeProduto(), produtoEncontrado.getNomeProduto());
         assertEquals(produto.getValorProduto(), produtoEncontrado.getValorProduto());
         verify(clienteRepository, times(1)).findById(produtoId);
+    }
+
+    @Test
+    void salvarProduto() {
+        ProdutoRequest produtoRequest = new ProdutoRequest("Produto 1", 50.0);
+        produtoRequest.setNomeProduto("Produto 1");
+        produtoRequest.setValorProduto(50.0);
+
+        Produto produtoSalvo = new Produto("Produto 1", 50.0);
+        when(produtoRepository.save(any(Produto.class))).thenReturn(produtoSalvo);
+
+        Produto produtoRetornado = produtoService.salvarProduto(produtoRequest);
+
+        assertNotNull(produtoRetornado);
+        assertEquals(produtoSalvo.getNomeProduto(), produtoRetornado.getNomeProduto());
+        assertEquals(produtoSalvo.getValorProduto(), produtoRetornado.getValorProduto());
+        verify(produtoRepository, times(1)).save(any(Produto.class));
     }
 }
