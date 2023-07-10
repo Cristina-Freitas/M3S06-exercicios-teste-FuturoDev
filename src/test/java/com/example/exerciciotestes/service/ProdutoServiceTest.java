@@ -66,4 +66,31 @@ class ProdutoServiceTest {
         assertEquals(produtoSalvo.getValorProduto(), produtoRetornado.getValorProduto());
         verify(produtoRepository, times(1)).save(any(Produto.class));
     }
+
+    @Test
+    void atualizarProduto() {
+        Long produtoId = 1L;
+        ProdutoRequest produtoRequest = new ProdutoRequest("Produto 1", 50.0);
+        produtoRequest.setNomeProduto("Novo Nome");
+        produtoRequest.setValorProduto(70.0);
+
+        Produto produtoAtual = new Produto("Produto 2", 70.0);
+        when(produtoRepository.findById(produtoId)).thenReturn(Optional.of(produtoAtual));
+
+        Produto produtoAtualizado = new Produto("Cliente 2", 70.0);
+        when(produtoRepository.save(any(Produto.class))).thenReturn(produtoAtualizado);
+
+        Produto produtoRetornado = produtoService.atualizarProduto(produtoId, produtoRequest);
+
+        assertNotNull(produtoRetornado);
+        assertEquals(produtoId, produtoRetornado.getId());
+        assertEquals(produtoRequest.getNomeProduto(), produtoRetornado.getNomeProduto());
+        assertEquals(produtoRequest.getValorProduto(), produtoRetornado.getValorProduto());
+        verify(produtoRepository, times(1)).findById(produtoId);
+        verify(produtoRepository, times(1)).save(any(Produto.class));
+    }
+
+    @Test
+    void detelaProdutoPorId() {
+    }
 }
