@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -93,6 +94,18 @@ class ClienteServiceTest {
         verify(clienteRepository, times(1)).findById(clienteId);
         verify(clienteRepository, times(1)).save(any(Cliente.class));
     }
-}
+
+    @Test
+    void detelaClientePorId() {
+        Long clienteId = 1L;
+        when(clienteRepository.findById(clienteId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(HttpClientErrorException.class, () -> clienteService.detelaClientePorId(clienteId));
+        verify(clienteRepository, times(1)).findById(clienteId);
+        verify(clienteRepository, never()).deleteById(clienteId);
+    }
+    }
+
 
 
